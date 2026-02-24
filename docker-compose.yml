@@ -1,18 +1,14 @@
 services:
   app:
     build: .
-    container_name: travel-alsace
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/travel_alsace
+      - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db:5432/travel_alsace
       - PORT=3000
       - NODE_ENV=production
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - internal
-      - web
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.travel-alsace.rule=Host(`travel.snir.sh`)"
@@ -23,12 +19,11 @@ services:
 
   db:
     image: postgres:17-alpine
-    container_name: travel-alsace-db
     restart: unless-stopped
     environment:
       - POSTGRES_DB=travel_alsace
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -36,41 +31,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - internal
-
-  migrate:
-    build: .
-    container_name: travel-alsace-migrate
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/travel_alsace
-    depends_on:
-      db:
-        condition: service_healthy
-    command: ["node", "-e", "import('./backend/dist/db/migrate.js')"]
-    networks:
-      - internal
-    profiles:
-      - setup
-
-  seed:
-    build: .
-    container_name: travel-alsace-seed
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/travel_alsace
-    depends_on:
-      db:
-        condition: service_healthy
-    command: ["node", "-e", "import('./backend/dist/db/seed.js')"]
-    networks:
-      - internal
-    profiles:
-      - setup
 
 volumes:
   pgdata:
-
-networks:
-  internal:
-  web:
-    external: true

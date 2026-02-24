@@ -85,10 +85,19 @@ async function migrate() {
   await sql`CREATE INDEX IF NOT EXISTS idx_bookmarks_poi ON bookmarks(poi_id)`;
 
   console.log("Migrations complete!");
-  await sql.end();
+  // Only close connection if running standalone
+  if (process.argv[1]?.includes('migrate')) {
+    await sql.end();
+  }
 }
 
-migrate().catch((err) => {
-  console.error("Migration failed:", err);
-  process.exit(1);
-});
+export { migrate };
+
+// Run directly if this is the main module
+const isMain = process.argv[1]?.includes('migrate');
+if (isMain) {
+  migrate().catch((err) => {
+    console.error("Migration failed:", err);
+    process.exit(1);
+  });
+}

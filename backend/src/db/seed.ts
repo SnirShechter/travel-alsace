@@ -891,10 +891,19 @@ async function seed() {
   `;
 
   console.log(`Seeded ${pois.length} POIs and 1 default itinerary`);
-  await sql.end();
+  // Only close connection if running standalone
+  if (process.argv[1]?.includes('seed')) {
+    await sql.end();
+  }
 }
 
-seed().catch((err) => {
-  console.error("Seed failed:", err);
-  process.exit(1);
-});
+export { seed };
+
+// Run directly if this is the main module
+const isMain = process.argv[1]?.includes('seed');
+if (isMain) {
+  seed().catch((err) => {
+    console.error("Seed failed:", err);
+    process.exit(1);
+  });
+}
