@@ -1,7 +1,4 @@
 node_modules
 .git
-*.md
 .env
 .env.*
-frontend/dist
-backend/dist

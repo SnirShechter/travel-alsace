@@ -33,11 +33,11 @@ app.post("/api/chat", async (c) => {
 app.get("/api/health", (c) => c.json({ status: "ok", timestamp: new Date().toISOString() }));
 
 // Serve frontend static files in production
-const frontendDist = path.resolve(import.meta.dirname || ".", "../frontend/dist");
+const frontendDist = path.resolve(process.cwd(), "frontend/dist");
 if (existsSync(frontendDist)) {
-  app.use("/*", serveStatic({ root: frontendDist }));
+  app.use("/*", serveStatic({ root: "./frontend/dist" }));
   // SPA fallback
-  app.get("*", serveStatic({ root: frontendDist, path: "index.html" }));
+  app.get("*", serveStatic({ root: "./frontend/dist", path: "index.html" }));
 }
 
 const port = parseInt(process.env.PORT || "3000");
