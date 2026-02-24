@@ -1,0 +1,17 @@
+{
+  "name": "travel-alsace",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "dev:backend": "npm -w backend run dev",
+    "dev:frontend": "npm -w frontend run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "npm -w frontend run build && npm -w backend run build",
+    "start": "npm -w backend run start",
+    "db:migrate": "npm -w backend run db:migrate",
+    "db:seed": "npm -w backend run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
