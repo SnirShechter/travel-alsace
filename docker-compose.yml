@@ -15,6 +15,7 @@ services:
       - "traefik.http.routers.travel-alsace.entrypoints=websecure"
       - "traefik.http.routers.travel-alsace.tls=true"
       - "traefik.http.routers.travel-alsace.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.travel-alsace.service=travel-alsace"
       - "traefik.http.services.travel-alsace.loadbalancer.server.port=3000"
 
   db:
